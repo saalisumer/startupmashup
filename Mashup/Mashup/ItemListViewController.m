@@ -79,7 +79,7 @@
     email.text = obj[@"emailAddress"];
 
     UILabel * phone = (UILabel*)[cell viewWithTag:-4];
-    email.text = obj[@"phoneNumber"];
+    phone.text = obj[@"phoneNumber"];
     
     return cell;
 }
