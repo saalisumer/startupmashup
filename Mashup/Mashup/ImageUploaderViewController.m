@@ -63,6 +63,11 @@
         NSData* data = (id)CFBridgingRelease(CGDataProviderCopyData(provider));
         mItem.imageData = data;
         [[ApplicationModel instance] shareItem:mItem];
+        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"Shared" message:@"Successful" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        [alert show];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            self.imageView.image = nil;
+        });
     }
 }
 
