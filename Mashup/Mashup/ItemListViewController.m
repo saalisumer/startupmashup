@@ -15,6 +15,7 @@
 @interface ItemListViewController ()
 {
     NSArray * mItems;
+    NSMutableDictionary * mDictionary;
 }
 @end
 
@@ -23,6 +24,7 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    mDictionary  = [[NSMutableDictionary alloc]init];
     PFQuery *query = [PFQuery queryWithClassName:@"Item"];
     mItems = [query findObjects:nil];
     [self.tableView reloadData];
@@ -66,11 +68,13 @@
     PFFile * file = obj[@"imageData"];
     [file getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
         if (!error) {
-            UIImage *image = [UIImage imageWithData:data];
-            UIImageView * imageView = (UIImageView*)[cell viewWithTag:-1];
-            imageView.image = image;
+            [mDictionary setValue:data forKey:[NSString stringWithFormat:@"%d",indexPath.row]];
+            [self.tableView reloadData];
         }
     }];
+    
+    imageView.image = [UIImage imageWithData:[mDictionary valueForKey:[NSString stringWithFormat:@"%d",indexPath.row]]];
+
     
     UILabel * userName = (UILabel*)[cell viewWithTag:-2];
     userName.text = obj[@"userName"];
