@@ -58,6 +58,12 @@
     return mItems.count;
 }
 
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    PFObject * obj = mItems[indexPath.row];
+    [[UIApplication sharedApplication]openURL:[NSURL URLWithString:[NSString stringWithFormat:@"tel://%@",obj[@"phoneNumber"]]]];
+}
+
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell =
@@ -66,16 +72,14 @@
     
     PFObject * obj = mItems[indexPath.row];
     PFFile * file = obj[@"imageData"];
+    UIImageView * imageView = (UIImageView*)[cell viewWithTag:-1];
     [file getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
         if (!error) {
             [mDictionary setValue:data forKey:[NSString stringWithFormat:@"%d",indexPath.row]];
-            [self.tableView reloadData];
         }
     }];
     
-    UIImageView * imageView = (UIImageView*)[cell viewWithTag:-1];
     imageView.image = [UIImage imageWithData:[mDictionary valueForKey:[NSString stringWithFormat:@"%d",indexPath.row]]];
-
     
     UILabel * userName = (UILabel*)[cell viewWithTag:-2];
     userName.text = obj[@"userName"];
