@@ -73,6 +73,7 @@
         }
     }];
     
+    UIImageView * imageView = (UIImageView*)[cell viewWithTag:-1];
     imageView.image = [UIImage imageWithData:[mDictionary valueForKey:[NSString stringWithFormat:@"%d",indexPath.row]]];
 
     
