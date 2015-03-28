@@ -7,23 +7,30 @@
 //
 
 #import "ItemListViewController.h"
+#import "Parse/PFQuery.h"
+#import "Parse/PFFile.h"
 
 #define ITEM_CELL @"ITEM_CELL"
 
-#import "Parse/PFObject.h"
 @interface ItemListViewController ()
-
+{
+    NSArray * mItems;
+}
 @end
 
 @implementation ItemListViewController
 
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    PFQuery *query = [PFQuery queryWithClassName:@"Item"];
+    mItems = [query findObjects:nil];
+    [self.tableView reloadData];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    
-    PFObject *testObject = [PFObject objectWithClassName:@"TestObject"];
-    testObject[@"foo"] = @"bar";
-    [testObject saveInBackground];
+
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -46,7 +53,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
-    return 10;
+    return mItems.count;
 }
 
 
@@ -55,7 +62,24 @@
 //    [[UITableViewCell alloc]init];
     [tableView dequeueReusableCellWithIdentifier:ITEM_CELL forIndexPath:indexPath];
     
-    // Configure the cell...
+    PFObject * obj = mItems[indexPath.row];
+    PFFile * file = obj[@"imageData"];
+    [file getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
+        if (!error) {
+            UIImage *image = [UIImage imageWithData:data];
+            UIImageView * imageView = (UIImageView*)[cell viewWithTag:-1];
+            imageView.image = image;
+        }
+    }];
+    
+    UILabel * userName = (UILabel*)[cell viewWithTag:-2];
+    userName.text = obj[@"userName"];
+    
+    UILabel * email = (UILabel*)[cell viewWithTag:-3];
+    email.text = obj[@"emailAddress"];
+
+    UILabel * phone = (UILabel*)[cell viewWithTag:-4];
+    email.text = obj[@"phoneNumber"];
     
     return cell;
 }

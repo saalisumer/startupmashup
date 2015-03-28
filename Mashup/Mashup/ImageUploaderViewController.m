@@ -62,6 +62,7 @@
         CGDataProviderRef provider = CGImageGetDataProvider([self imageWithView:self.scrollView].CGImage);
         NSData* data = (id)CFBridgingRelease(CGDataProviderCopyData(provider));
         mItem.imageData = data;
+        [[ApplicationModel instance] shareItem:mItem];
     }
 }
 
